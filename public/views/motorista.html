@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motorista</title>
+</head>
+
+<body>
+    <form action="#" class="cadastrar-motor">
+        <div class="titulo-barra3">
+            <h1>Cadastre o Motorista</h1>
+            <div class="barra-horizontal"></div>
+        </div>
+
+        <div class="campo-input">
+            <label for="foto-motor">Foto*</label>
+            <input type="file" />
+        </div>
+
+
+
+        <div class="campo-input">
+            <label for="nome">Nome completo*</label>
+            <input type="text" id="nome" />
+        </div>
+        <div>
+            <label for="cnh">Categoria da CNH*</label>
+            <select id="categoriacnh" name="categoriacnh" required>
+                <option value="">Selecione</option>
+                <option value="A">Categoria A (motos)</option>
+                <option value="B">Categoria B (carros)</option>
+                <option value="C">Categoria C (caminhões)</option>
+                <option value="D">Categoria D (ônibus)</option>
+                <option value="E">Categoria E (carretas)</option>
+                <option value="AB">Categoria AB (moto e carro)</option>
+            </select>
+
+        </div>
+        <div class="campo-input">
+            <label for="rg">Rg*</label>
+            <input type="tel" id="rg" placeholder="00.000.000-0" />
+        </div>
+        <div class="campo-input">
+            <label for="uf">UF*</label>
+            <input type="text" id="uf" />
+        </div>
+
+
+
+        <div class="campo-input">
+            <label for="email">Seu e-mail*</label>
+            <input type="email" id="email" />
+        </div>
+
+        <div class="campo-input">
+            <label for="cep">Cep*</label>
+            <input type="text" id="cep" />
+        </div>
+
+
+
+        <div class="campo-input">
+            <label for="complemento">Complemento*</label>
+            <input type="text" id="complemento" />
+        </div>
+
+        <div class="campo-input">
+            <label for="dataNascimento">Data Nasc*</label>
+            <input type="date" id="dataNascimento" required />
+        </div>
+
+        <div class="campo-input">
+            <label for="telefone">Telefone*</label>
+            <input type="tel" id="telefone" placeholder="(99) 99999-9999" />
+        </div>
+
+
+
+        <div class="campo-input">
+            <label for="cnh">CNH*</label>
+            <input type="text" id="cnh" placeholder="11 digítos" />
+        </div>
+
+
+
+        <div class="campo-input">
+            <label for="dataCnh">Vencimento*</label>
+            <input type="date" id="dataCnh" />
+
+        </div>
+
+
+        <div class="campo-input">
+            <label for="nomeMae">Nome da Mãe*</label>
+            <input type="text" id="nomeMae" />
+        </div>
+
+        <div class="campo-input">
+            <label for="cidade">Cidade*</label>
+            <input type="text" id="cidade" />
+        </div>
+
+        <div class="campo-input">
+            <label for="endereco">Endereço*</label>
+            <input type="text" id="endereco" />
+        </div>
+
+        <div class="campo-input">
+            <label for="numero">Numero*</label>
+            <input type="text" id="numero" />
+        </div>
+
+        <div class="campo-input">
+            <label for="pais">País*</label>
+            <input type="text" id="pais" />
+        </div>
+
+
+        <div class="campo-input">
+            <label for="obs">Observações</label>
+            <textarea id="obs" name="obs" rows="4" cols="50" placeholder="Digite aqui..."></textarea>
+        </div>
+
+        <div>
+
+            <button class="cadastrar-btn" type="submit">Cadastrar</button>
+
+        </div>
+
+        <div>
+
+            <button class="editar-btn" type="button">Editar</button>
+
+        </div>
+
+
+        <div>
+            <button class="visualizar-btn" type="button">Visualizar</button>
+        </div>
+
+        <div>
+            <button class="excluirbtn" type="button">Excluir</button>
+        </div>
+
+
+
+
+
+        <script>
+
+            const form = document.querySelector(".cadastrar-motor");
+
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+
+                const dados = {
+                    nome: document.querySelector("#nome").value,
+                    rg: document.querySelector("#rg").value,
+                    uf: document.querySelector("#uf").value,
+                    email: document.querySelector("#email").value,
+                    cep: document.querySelector("#cep").value,
+                    complemento: document.querySelector("#complemento").value,
+                    dataNascimento: document.querySelector("#dataNascimento").value,
+                    telefone: document.querySelector("#telefone").value,
+                    cnh: document.querySelector("#cnh").value,
+                    categoriaCnh: document.querySelector("#categoriacnh").value,
+                    vencimentoCnh: document.querySelector("#dataCnh").value,
+                    nomeMae: document.querySelector("#nomeMae").value,
+                    cidade: document.querySelector("#cidade").value,
+                    endereco: document.querySelector("#endereco").value,
+                    numero: document.querySelector("#numero").value,
+                    pais: document.querySelector("#pais").value,
+                    observacoes: document.querySelector("#obs").value
+                };
+                console.log("dados validados", dados);
+                try {
+                    const resposta = await fetch('http://localhost:3000/rotas_api/public/views', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(dados),
+                    });
+
+                    const resultado = await resposta.json();
+                    alert(resultado.message);
+                } catch (erro) {
+                    console.error('Erro ao cadastrar:', erro);
+                    alert('Erro ao cadastrar motorista.');
+                }
+            });
+
+
+        </script>
+
+
+        <script>
+
+            const excluirBtn = document.querySelector(".excluirbtn");
+
+            excluirBtn.addEventListener("click", async (e) => {
+                e.preventDefault();
+
+                const idMotorista = prompt("Digite o ID do motorista que deseja excluir:");
+                console.log("ID digitado para exclusão:", idMotorista);
+                if (!idMotorista || isNaN(idMotorista)) {
+                    alert("ID inválido.");
+                    return;
+                }
+
+                try {
+                    const resposta = await fetch(`http://localhost:3000/rotas_api/public/views/${idMotorista}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (!resposta.ok) {
+                        throw new Error("Erro ao excluir");
+                    }
+
+                    const resultado = await resposta.json();
+                    alert(resultado.message);
+                } catch (erro) {
+                    console.error("Erro ao deletar motorista:", erro);
+                    alert("Erro ao deletar motorista.");
+                }
+            });
+        </script>
+
+
+        </script>
+        <script>
+
+            const editarBtn = document.querySelector(".editar-btn");
+
+            editarBtn.addEventListener("click", async (e) => {
+                e.preventDefault();
+
+                const idMotorista = prompt("Digite o ID do motorista a ser editado:");
+
+                if (!idMotorista) {
+                    alert("ID inválido.");
+                    return;
+                }
+
+
+
+                const atualizarDadosMotor = {
+                    nome: document.querySelector("#nome").value,
+                    rg: document.querySelector("#rg").value,
+                    uf: document.querySelector("#uf").value,
+                    email: document.querySelector("#email").value,
+                    cep: document.querySelector("#cep").value,
+                    complemento: document.querySelector("#complemento").value,
+                    dataNascimento: document.querySelector("#dataNascimento").value,
+                    telefone: document.querySelector("#telefone").value,
+                    cnh: document.querySelector("#cnh").value,
+                    categoriaCnh: document.querySelector("#categoriacnh").value,
+                    vencimentoCnh: document.querySelector("#dataCnh").value,
+                    nomeMae: document.querySelector("#nomeMae").value,
+                    cidade: document.querySelector("#cidade").value,
+                    endereco: document.querySelector("#endereco").value,
+                    numero: document.querySelector("#numero").value,
+                    pais: document.querySelector("#pais").value,
+                    observacoes: document.querySelector("#obs").value
+                };
+
+                try {
+                    const resposta = await fetch(`http://localhost:3000/rotas_api/public/views/${idMotorista}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(atualizarDadosMotor),
+                    });
+
+                    const resultado = await resposta.json();
+                    alert(resultado.message);
+                } catch (erro) {
+                    console.error('Erro ao editar:', erro);
+                    alert('Erro ao editar motorista.');
+                }
+            });
+
+
+
+
+        </script>
+
+</body>
+
+</html>

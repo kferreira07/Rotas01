@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carros</title>
+</head>
+
+<body>
+    <form action="#" class="cadastrar-carros">
+        <div class="titulo-barra4">
+            <h1>Cadastre o Veiculo</h1>
+            <div class="barra-horizontal"></div>
+        </div>
+
+        <div class="campo-input">
+            <label for="marca">Marca*</label>
+            <select id="marca" name="marca" required>
+                <option value="">Selecione</option>
+                <option value="ford">Ford</option>
+                <option value="chevrolet">Chevrolet</option>
+                <option value="fiat">Fiat</option>
+                <option value="toyota">Toyota</option>
+            </select> />
+        </div>
+
+
+        <div class="campo-input">
+            <label for="modelo">Modelo*</label>
+            <input type="text" />
+        </div>
+
+
+        <div class="campo-input">
+            <label for="fabricacao">Fabricação*</label>
+            <input type="number" />
+        </div>
+
+        <div class="campo-input">
+            <label for="cor">Cor*</label>
+            <input type="color" />
+        </div>
+
+
+
+        <div class="campo-input">
+            <label for="placa">Placa*</label>
+            <input type="text" id="placa" placeholder="ABC-1234" />
+        </div>
+
+        <div class="campo-input">
+            <label for="renavan">Renavan*</label>
+            <input type="text" id="renavan" placeholder="11 digítos" />
+        </div>
+
+
+
+        <div class="campo-input">
+            <label for="chassi">Chassi*</label>
+            <input type="text" id="chassi" placeholder=" 17 caracteres alfanuméricos" />
+        </div>
+
+        <div class="campo-input">
+            <label for="quilometragen">Quilometragem*</label>
+            <input type="text" placeholder="Ex:15000" />
+        </div>
+
+
+        <div class="campo-input">
+            <label for="t-combustivel">Tipo de Combustivel*</label>
+            <select name="t-combustivel" required>
+                <option value="">Selecione</option>
+                <option value="gasolina">Gasolina</option>
+                <option value="etanol">Etanol</option>
+                <option value="disel">Disel</option>
+                <option value="flex">Flex</option>
+
+
+
+
+            </select>
+        </div>
+
+
+        <div class="campo-input">
+            <label for="trasmissao">Trasnmissão*</label>
+            <select name="transmissao" required>
+                <option value="">Selecione</option>
+                <option value="manual">Manual</option>
+                <option value="automatico">Automatico</option>
+            </select>
+        </div>
+
+
+
+        <div class="campo-input">
+            <label for="valor">Valor*</label>
+            <input type="text" />
+
+        </div>
+
+
+        <div class="campo-input">
+            <label for="foto-carro">Foto*</label>
+            <input type="file" />
+        </div>
+
+        <div class="campo-input">
+            <label for="obs">Observaçoes*</label>
+
+            <textarea id="obs" name="obs" rows="4" cols="50" placeholder="Digite aqui..."></textarea>
+        </div>
+
+        <button class="cadastrar-btn" type="submit">Cadastrar</button>
+
+        </div>
+
+        <div>
+
+            <button class="editar-btn" type="submit">Editar</button>
+
+        </div>
+        <div>
+            <button class="excluir-btn" type="submit">Excluir</button>
+        </div>
+
+        <div>
+            <button class="visualizar-btn" type="submit">Visualizar</button>
+        </div>
+
+</body>
+
+</html>
