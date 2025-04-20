@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-
+const db = require('./db');
 const app = express();
 const PORT = 3000;
 
@@ -70,3 +70,14 @@ app.listen(PORT)
             console.error('Erro ao iniciar o servidor:', err);
         }
     });
+
+
+app.get('/motoristas', (req, res) => {
+    db.query('SELECT * FROM motoristas', (err, results) => {
+        if (err) {
+            return res.status(500).json({ erro: err.message });
+        }
+        res.json(results);
+    });
+});
+
