@@ -1,79 +1,62 @@
 const express = require('express');
 const cors = require('cors');
-const db = require('./db');
+const connection = require('./db');
+
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 app.use(cors());
 
-let motoristas = [];
-let id = 1;
-
+// Teste simples
 app.get('/', (req, res) => {
     res.send('API funcionando!');
 });
 
-app.post('/rotas_api/public/views', (req, res) => {
-    const motorista = { id: id++, ...req.body };
-    motoristas.push(motorista);
-    console.log('Motorista Cadastrado:', motorista);
-    res.status(201).json({ message: 'Motorista cadastrado!', motorista });
-});
+// Cadastrar motorista no banco de dados
+app.post('/motoristas', (req, res) => {
+    const {
+        nome,
+        rg,
+        uf,
+        email,
+        cep,
+        complemento,
+        dataNascimento,
+        telefone,
+        cnh,
+        categoriaCnh,
+        vencimentoCnh,
+        nomeMae,
+        cidade,
+        endereco,
+        numero,
+        pais,
+        observacoes
+    } = req.body;
 
+    const query = `
+        INSERT INTO motoristas (
+            nome, rg, uf, email, cep, complemento, dataNascimento, telefone,
+            cnh, categoriaCnh, vencimentoCnh, nomeMae, cidade, endereco, numero, pais, observacoes
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
 
-app.delete('/rotas_api/public/views/:id', (req, res) => {
-    const index = motoristas.findIndex(m => m.id == req.params.id);
-    if (index !== -1) {
-        const deletedMotorista = motoristas.splice(index, 1);
-        res.json({ message: 'Motorista excluído!', motorista: deletedMotorista[0] });
-    } else {
-        res.status(404).json({ message: 'Motorista não encontrado.' });
-    }
-});
-
-
-
-// Rota GET para listar todos os motoristas
-app.get('/rotas_api/public/views', (req, res) => {
-    res.json(motoristas); // Retorna todos os motoritas
-});
-
-app.get('/rotas_api/public/views/:id', (req, res) => {
-    const motorista = motoristas.find(m => m.id == req.params.id);
-    if (motorista) {
-        res.json(motorista);
-    } else {
-        res.status(404).json({ message: 'Motorista não encontrado.' });
-    }
-});
-
-app.put('/rotas_api/public/views/:id', (req, res) => {
-    const index = motoristas.findIndex(m => m.id == req.params.id);
-    if (index !== -1) {
-        motoristas[index] = { id: parseInt(req.params.id), ...req.body };
-        res.json({ message: 'Motorista atualizado!', motorista: motoristas[index] });
-    } else {
-        res.status(404).json({ message: 'Motorista não encontrado.' });
-    }
-});
-
-// Iniciar servidor com tratamento de erro
-app.listen(PORT)
-    .on('listening', () => {
-        console.log(` Servidor rodando na porta ${PORT}`);
-    })
-    .on('error', (err) => {
-        if (err.code === 'EADDRINUSE') {
-            console.error(` Porta ${PORT} já está em uso.`);
-        } else {
-            console.error('Erro ao iniciar o servidor:', err);
+    connection.query(query, [
+        nome, rg, uf, email, cep, complemento, dataNascimento, telefone,
+        cnh, categoriaCnh, vencimentoCnh, nomeMae, cidade, endereco, numero, pais, observacoes
+    ], (err, result) => {
+        if (err) {
+            console.error('Erro ao inserir motorista:', err);
+            return res.status(500).json({ erro: err.message });
         }
+        res.status(201).json({ message: 'Motorista cadastrado com sucesso!', id: result.insertId });
     });
+});
 
-
+// Listar todos os motoristas
 app.get('/motoristas', (req, res) => {
-    db.query('SELECT * FROM motoristas', (err, results) => {
+    connection.query('SELECT * FROM motoristas', (err, results) => {
         if (err) {
             return res.status(500).json({ erro: err.message });
         }
@@ -81,3 +64,64 @@ app.get('/motoristas', (req, res) => {
     });
 });
 
+// Obter um motorista por ID
+app.get('/motoristas/:id', (req, res) => {
+    const id = req.params.id;
+    connection.query('SELECT * FROM motoristas WHERE id = ?', [id], (err, results) => {
+        if (err) {
+            return res.status(500).json({ erro: err.message });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Motorista não encontrado.' });
+        }
+        res.json(results[0]);
+    });
+});
+
+// Atualizar motorista
+app.put('/motoristas/:id', (req, res) => {
+    const id = req.params.id;
+    const dados = req.body;
+
+    const query = `
+        UPDATE motoristas SET ?
+        WHERE id = ?
+    `;
+
+    connection.query(query, [dados, id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ erro: err.message });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Motorista não encontrado.' });
+        }
+        res.json({ message: 'Motorista atualizado com sucesso!' });
+    });
+});
+
+// Deletar motorista
+app.delete('/motoristas/:id', (req, res) => {
+    const id = req.params.id;
+    connection.query('DELETE FROM motoristas WHERE id = ?', [id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ erro: err.message });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Motorista não encontrado.' });
+        }
+        res.json({ message: 'Motorista excluído com sucesso!' });
+    });
+});
+
+// Iniciar servidor
+app.listen(PORT)
+    .on('listening', () => {
+        console.log(`🚀 Servidor rodando na porta ${PORT}`);
+    })
+    .on('error', (err) => {
+        if (err.code === 'EADDRINUSE') {
+            console.error(`❌ Porta ${PORT} já está em uso.`);
+        } else {
+            console.error('❌ Erro ao iniciar o servidor:', err);
+        }
+    });
