@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Devolver</title>
+</head>
+
+<body>
+    <form action="#" class="Emprestar">
+
+        <div class="campo-input">
+            <label for="gestor">Gestor</label>
+            <input type="text" id="gestor" />
+        </div>
+        <div class="select-container">
+
+            <label for="motorista">Motorista:</label>
+            <select name="motorista" id="motorista">
+                <% motoristas.forEach(motorista=> { %>
+                    <option value="<%= motorista.nome %>">
+                        <%= motorista.nome %>
+                    </option>
+                    <% }) %>
+            </select>
+
+        </div>
+        <div class="campo-input">
+            <label for="telefone">Telefone</label>
+            <input type="text" id="telefone" />
+        </div>
+
+        <div class="campo-input">
+            <label for="carro">Carro</label>
+            <input type="text" id="carro" />
+        </div>
+
+        <div class="campo-input">
+            <label for="odometro">Odômetro atual no ato da devolução do carro</label>
+            <input type="text" id="odometro" />
+        </div>
+
+        <div class="campo-input">
+            <label for="evento">Tipo de evento</label>
+            <input type="text" id="evento" />
+        </div>
+
+        <div class="campo-input">
+            <label for="dataEmprestimo">Data\hora da devolução</label>
+            <input type="datetime-local" id="dataEmprestimo" />
+        </div>
+
+
+
+</body>
+
+</html>

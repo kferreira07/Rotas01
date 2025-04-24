@@ -8,9 +8,9 @@
 </head>
 
 <body>
-    <form action="#" class="cadastrar-carros">
+    <form action="#" class="cadastrar-carros" enctype="multipart/form-data">
         <div class="titulo-barra4">
-            <h1>Cadastre o Veiculo</h1>
+            <h1>Cadastre o Veículo</h1>
             <div class="barra-horizontal"></div>
         </div>
 
@@ -22,113 +22,137 @@
                 <option value="chevrolet">Chevrolet</option>
                 <option value="fiat">Fiat</option>
                 <option value="toyota">Toyota</option>
-            </select> />
+            </select>
         </div>
-
 
         <div class="campo-input">
             <label for="modelo">Modelo*</label>
-            <input type="text" />
+            <input type="text" id="modelo" name="modelo" required />
         </div>
-
 
         <div class="campo-input">
             <label for="fabricacao">Fabricação*</label>
-            <input type="number" />
+            <input type="number" id="fabricacao" name="fabricacao" required />
         </div>
 
         <div class="campo-input">
             <label for="cor">Cor*</label>
-            <input type="color" />
+            <input type="color" id="cor" name="cor" required />
         </div>
-
-
 
         <div class="campo-input">
             <label for="placa">Placa*</label>
-            <input type="text" id="placa" placeholder="ABC-1234" />
+            <input type="text" id="placa" name="placa" placeholder="ABC-1234" required />
         </div>
 
         <div class="campo-input">
             <label for="renavan">Renavan*</label>
-            <input type="text" id="renavan" placeholder="11 digítos" />
+            <input type="text" id="renavan" name="renavan" placeholder="11 digítos" required />
         </div>
-
-
 
         <div class="campo-input">
             <label for="chassi">Chassi*</label>
-            <input type="text" id="chassi" placeholder=" 17 caracteres alfanuméricos" />
+            <input type="text" id="chassi" name="chassi" placeholder="17 caracteres alfanuméricos" required />
         </div>
 
         <div class="campo-input">
-            <label for="quilometragen">Quilometragem*</label>
-            <input type="text" placeholder="Ex:15000" />
+            <label for="quilometragem">Quilometragem*</label>
+            <input type="text" id="quilometragem" name="quilometragem" required />
         </div>
 
-
         <div class="campo-input">
-            <label for="t-combustivel">Tipo de Combustivel*</label>
-            <select name="t-combustivel" required>
+            <label for="tipoCombustivel">Tipo de Combustível*</label>
+            <select id="tipoCombustivel" name="tipoCombustivel" required>
                 <option value="">Selecione</option>
                 <option value="gasolina">Gasolina</option>
                 <option value="etanol">Etanol</option>
-                <option value="disel">Disel</option>
+                <option value="diesel">Diesel</option>
                 <option value="flex">Flex</option>
-
-
-
-
             </select>
         </div>
-
 
         <div class="campo-input">
-            <label for="trasmissao">Trasnmissão*</label>
-            <select name="transmissao" required>
+            <label for="transmissao">Transmissão*</label>
+            <select id="transmissao" name="transmissao" required>
                 <option value="">Selecione</option>
                 <option value="manual">Manual</option>
-                <option value="automatico">Automatico</option>
+                <option value="automatico">Automático</option>
             </select>
         </div>
-
-
 
         <div class="campo-input">
             <label for="valor">Valor*</label>
-            <input type="text" />
-
-        </div>
-
-
-        <div class="campo-input">
-            <label for="foto-carro">Foto*</label>
-            <input type="file" />
+            <input type="text" id="valor" name="valor" required />
         </div>
 
         <div class="campo-input">
-            <label for="obs">Observaçoes*</label>
+            <label for="foto">Foto*</label>
+            <input type="file" id="foto" name="foto" required />
+        </div>
 
-            <textarea id="obs" name="obs" rows="4" cols="50" placeholder="Digite aqui..."></textarea>
+        <div class="campo-input">
+            <label for="observacoes">Observações*</label>
+            <textarea id="observacoes" name="observacoes" rows="4" cols="50" placeholder="Digite aqui..."
+                required></textarea>
         </div>
 
         <button class="cadastrar-btn" type="submit">Cadastrar</button>
+    </form>
 
-        </div>
+    <script>
+        const form = document.querySelector(".cadastrar-carros");
 
-        <div>
+        window.addEventListener('load', () => {
+            // Preencher os campos do formulário com os valores da URL
+            const params = new URLSearchParams(window.location.search);
+            document.querySelector("#marca").value = params.get('marca');
+            document.querySelector("#tipoCombustivel").value = params.get('t-combustivel');
+            document.querySelector("#transmissao").value = params.get('transmissao');
+            document.querySelector("#observacoes").value = params.get('obs');
+        });
 
-            <button class="editar-btn" type="submit">Editar</button>
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-        </div>
-        <div>
-            <button class="excluir-btn" type="submit">Excluir</button>
-        </div>
+            const dados = {
+                marca: document.querySelector("#marca").value,
+                modelo: document.querySelector("#modelo").value,
+                fabricacao: document.querySelector("#fabricacao").value,
+                cor: document.querySelector("#cor").value,
+                placa: document.querySelector("#placa").value,
+                renavan: document.querySelector("#renavan").value,
+                chassi: document.querySelector("#chassi").value,
+                quilometragem: document.querySelector("#quilometragem").value,
+                tipoCombustivel: document.querySelector("#tipoCombustivel").value,
+                transmissao: document.querySelector("#transmissao").value,
+                valor: document.querySelector("#valor").value,
+                foto: document.querySelector("#foto").value,
+                observacoes: document.querySelector("#observacoes").value
+            };
 
-        <div>
-            <button class="visualizar-btn" type="submit">Visualizar</button>
-        </div>
+            try {
+                const resposta = await fetch('http://localhost:3000/carros', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
 
+                const texto = await resposta.text();
+                console.log('Resposta do servidor:', texto);
+
+                if (!resposta.ok) {
+                    throw new Error(`Erro na requisição: ${resposta.status}`);
+                }
+
+                const resultado = JSON.parse(texto);
+                alert(resultado.message);
+            } catch (erro) {
+                console.error('Erro ao cadastrar:', erro);
+                alert('Erro ao cadastrar carro.');
+            }
+        });
+
+    </script>
 </body>
 
 </html>

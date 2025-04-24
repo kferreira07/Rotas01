@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emprestar</title>
+</head>
+
+<body>
+    <form action="/emprestar" method="POST" class="Emprestar">
+
+        <div class="campo-input">
+            <label for="gestor">Gestor</label>
+            <input type="text" id="gestor" name="gestor" />
+        </div>
+
+        <div class="select-container">
+            <label for="motoristaSelect">Motorista:</label>
+            <select id="motoristaSelect">
+
+
+                <option value="">Selecione um motorista</option>
+            </select>
+
+            <script>
+                fetch('/api/motoristas')
+                    .then(res => res.json())
+                    .then(motoristas => {
+                        const select = document.getElementById('motoristaSelect');
+                        motoristas.forEach(m => {
+                            const option = document.createElement('option');
+                            option.value = m.id;
+                            option.textContent = m.nome;
+                            select.appendChild(option);
+                        });
+                    })
+                    .catch(err => {
+                        console.error('Erro ao carregar motoristas:', err);
+                    });
+            </script>
+        </div>
+
+        <div class="campo-input">
+            <label for="telefone">Telefone</label>
+            <input type="text" id="telefone" name="telefone" />
+        </div>
+
+        <div class="campo-input">
+            <label for="carro">Carro</label>
+            <input type="text" id="carro" name="carro" />
+        </div>
+
+        <div class="campo-input">
+            <label for="odometro">Odômetro atual do carro</label>
+            <input type="text" id="odometro" name="odometro" />
+        </div>
+
+        <div class="campo-input">
+            <label for="evento">Tipo de evento</label>
+            <input type="text" id="evento" name="evento" />
+        </div>
+
+        <div class="campo-input">
+            <label for="dataEmprestimo">Data\hora do empréstimo</label>
+            <input type="datetime-local" id="dataEmprestimo" name="dataEmprestimo" />
+        </div>
+
+        <div class="campo-input">
+            <button type="submit">Emprestar</button>
+        </div>
+
+    </form>
+</body>
+
+</html>
