@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const connection = require('./db');
-
+const bcrypt = require('bcrypt');
+const { body, validationResult } = require('express-validator');
 const app = express();
 const PORT = 3000;
 
@@ -166,7 +167,7 @@ app.post('/emprestar', (req, res) => {
             return res.status(500).send('Erro ao registrar empréstimo');
         }
         res.status(201).send('Empréstimo registrado com sucesso!');
-        form.reset();
+
     });
 });
 
@@ -206,4 +207,69 @@ app.post('/carros', (req, res) => {
         res.status(201).json({ message: 'Carro cadastrado com sucesso!', id: result.insertId });
     });
 });
+
+// devolver veículos
+app.post('/devolver', (req, res) => {
+    const { gestor, nome, telefone, carro, odometro, evento, dataDevolucao } = req.body;
+
+
+    if (!gestor || !nome || !carro || !dataDevolucao) {
+        return res.status(400).send('Campos obrigatórios faltando');
+    }
+
+    // salvar os dados no banco de dados
+    const query = `
+        INSERT INTO devolucao (gestor, nome, telefone, carro, odometro, evento, dataDevolucao)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+    console.log('Dados devolução:', [gestor, nome, telefone, carro, odometro, evento, dataDevolucao]);
+
+    connection.query(query, [gestor, nome, telefone, carro, odometro, evento, dataDevolucao], (err, result) => {
+        if (err) {
+            console.error('Erro ao registrar Devolução:', err);
+            return res.status(500).send('Erro ao registrar devolução');
+        }
+        res.status(201).send('Devolução registrada com sucesso!');
+
+    });
+});
+
+app.post('/cadastrase',
+    body('email').isEmail().withMessage('e-mail inválido.'),
+    body('cpf').matches(/^\d{11}$/).withMessage('O CPF deve ter 11 dígitos.'),
+    body('senha').isLength({ min: 6 }).withMessage('A senha deve ter no mínimo 6 caracteres.'),
+    async (req, res) => {
+        const erros = validationResult(req);
+
+        if (!erros.isEmpty()) {
+            return res.status(400).json({ erro: erros.array()[0].msg });
+        }
+
+        const { nome, sobrenome, telefone, cpf, email, senha } = req.body;
+
+        try {
+            const saltRounds = 10;
+            const senha_hash = await bcrypt.hash(senha, saltRounds);
+
+            const sql = `
+                INSERT INTO gestor
+                (nome, sobrenome, telefone, cpf, email, senha_hash)
+                VALUES (?, ?, ?, ?, ?, ?)
+            `;
+
+            connection.query(sql, [nome, sobrenome, telefone, cpf, email, senha_hash], (err, result) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).json({ erro: 'Erro ao salvar dados no banco.' });
+                }
+                res.status(201).json({ message: 'Gestor cadastrado com sucesso!' });
+            });
+
+        } catch (e) {
+            console.error(e);
+            res.status(500).json({ erro: 'Erro interno no servidor.' });
+        }
+    }
+);
+
 
