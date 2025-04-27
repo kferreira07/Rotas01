@@ -146,23 +146,31 @@ app.get('/api/motoristas', (req, res) => {
 
 //  empréstar de veículos
 app.post('/emprestar', (req, res) => {
-    const { gestor, motorista, telefone, carro, odometro, evento, dataEmprestimo } = req.body;
+    const { gestor, nome, telefone, carro, odometro, evento, dataEmprestimo } = req.body;
+
+    // Verificação simples
+    if (!gestor || !nome || !carro || !dataEmprestimo) {
+        return res.status(400).send('Campos obrigatórios faltando');
+    }
 
     // salvar os dados no banco de dados
     const query = `
-        INSERT INTO emprestimos (gestor, motorista, telefone, carro, odometro, evento, dataEmprestimo)
+        INSERT INTO emprestimos (gestor, nome, telefone, carro, odometro, evento, dataEmprestimo)
         VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
+    console.log('Dados do empréstimo:', [gestor, nome, telefone, carro, odometro, evento, dataEmprestimo]);
 
-    connection.query(query, [gestor, motorista, telefone, carro, odometro, evento, dataEmprestimo], (err, result) => {
+    connection.query(query, [gestor, nome, telefone, carro, odometro, evento, dataEmprestimo], (err, result) => {
         if (err) {
             console.error('Erro ao registrar empréstimo:', err);
             return res.status(500).send('Erro ao registrar empréstimo');
         }
         res.status(201).send('Empréstimo registrado com sucesso!');
+        form.reset();
     });
 });
 
+// cadastrar carros 
 app.post('/carros', (req, res) => {
     const {
         marca,
@@ -198,3 +206,4 @@ app.post('/carros', (req, res) => {
         res.status(201).json({ message: 'Carro cadastrado com sucesso!', id: result.insertId });
     });
 });
+
