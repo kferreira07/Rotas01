@@ -2,7 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const connection = require('./db');
 const bcrypt = require('bcrypt');
-const { body, validationResult } = require('express-validator');
+const { body, validationResult, query } = require('express-validator');
+const jwt = require('jsonwebtoken');
+
 const app = express();
 const PORT = 3000;
 
@@ -272,4 +274,50 @@ app.post('/cadastrase',
     }
 );
 
+app.post('/login', async (req, res) => {
+    const { email, senha } = req.body;
 
+    if (!email || !senha) {
+        return res.status(400).json({ success: false, message: 'Por favor, forneça email e senha.' });
+    }
+
+    connection.query('SELECT * FROM gestor WHERE email = ?', [email], async (err, results) => {
+        if (err) {
+            console.error('Erro na consulta ao banco de dados:', err);
+            return res.status(500).json({ success: false, message: 'Erro interno do servidor.' });
+        }
+
+        if (results.length === 0) {
+            return res.status(401).json({ success: false, message: 'Usuário não encontrado.' });
+        }
+
+        const gestor = results[0];
+
+        const senhaValida = await bcrypt.compare(senha, gestor.senha_hash);
+
+        if (!senhaValida) {
+            return res.status(401).json({ success: false, message: 'Senha incorreta.' });
+        }
+
+        // Criar e retornar o token JWT
+        const token = jwt.sign({ gestorId: gestor.id }, 'segredo_jwt', { expiresIn: '1h' });
+
+        return res.json({
+            success: true,
+            message: 'Login bem-sucedido!',
+            token,
+        });
+    });
+});
+
+
+app.get('/mcadastrados', (req, res) => {
+    connection.query('SELECT * FROM motoristas', (err, results) => {
+        if (err) {
+            console.error('Erro na consulta:', err);
+            res.status(500).json({ error: 'Erro ao buscar dados.' });
+            return;
+        }
+        res.json(results); // Envia os dados como JSON
+    });
+});
