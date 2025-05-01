@@ -149,21 +149,21 @@ app.get('/api/motoristas', (req, res) => {
 
 //  empréstar de veículos
 app.post('/emprestar', (req, res) => {
-    const { gestor, nome, telefone, carro, odometro, evento, dataEmprestimo } = req.body;
+    const { gestor, motorista, telefone, carro, odometro, tipo, data_hora } = req.body;
 
     // Verificação simples
-    if (!gestor || !nome || !carro || !dataEmprestimo) {
+    if (!gestor || !motorista || !carro || !data_hora) {
         return res.status(400).send('Campos obrigatórios faltando');
     }
 
     // salvar os dados no banco de dados
     const query = `
-        INSERT INTO emprestimos (gestor, nome, telefone, carro, odometro, evento, dataEmprestimo)
+        INSERT INTO eventos (gestor, motorista, telefone, carro, odometro, tipo, data_hora)
         VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
-    console.log('Dados do empréstimo:', [gestor, nome, telefone, carro, odometro, evento, dataEmprestimo]);
+    console.log('Dados do empréstimo:', [gestor, motorista, telefone, carro, odometro, tipo, data_hora]);
 
-    connection.query(query, [gestor, nome, telefone, carro, odometro, evento, dataEmprestimo], (err, result) => {
+    connection.query(query, [gestor, motorista, telefone, carro, odometro, tipo, data_hora], (err, result) => {
         if (err) {
             console.error('Erro ao registrar empréstimo:', err);
             return res.status(500).send('Erro ao registrar empréstimo');
@@ -212,21 +212,21 @@ app.post('/carros', (req, res) => {
 
 // devolver veículos
 app.post('/devolver', (req, res) => {
-    const { gestor, nome, telefone, carro, odometro, evento, dataDevolucao } = req.body;
+    const { gestor, motorista, telefone, carro, odometro, tipo, data_hora } = req.body;
 
 
-    if (!gestor || !nome || !carro || !dataDevolucao) {
+    if (!gestor || !motorista || !carro || !data_hora) {
         return res.status(400).send('Campos obrigatórios faltando');
     }
 
     // salvar os dados no banco de dados
     const query = `
-        INSERT INTO devolucao (gestor, nome, telefone, carro, odometro, evento, dataDevolucao)
+        INSERT INTO eventos ( gestor,motorista, telefone, carro, odometro ,tipo, data_hora)
         VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
-    console.log('Dados devolução:', [gestor, nome, telefone, carro, odometro, evento, dataDevolucao]);
+    console.log('Dados devolução:', [gestor, motorista, telefone, carro, odometro, tipo, data_hora]);
 
-    connection.query(query, [gestor, nome, telefone, carro, odometro, evento, dataDevolucao], (err, result) => {
+    connection.query(query, [gestor, motorista, telefone, carro, odometro, tipo, data_hora], (err, result) => {
         if (err) {
             console.error('Erro ao registrar Devolução:', err);
             return res.status(500).send('Erro ao registrar devolução');
@@ -299,7 +299,7 @@ app.post('/login', async (req, res) => {
             return res.status(401).json({ success: false, message: 'Senha incorreta.' });
         }
 
-        // Criar e retornar o token JWT
+
         const token = jwt.sign({ gestorId: gestor.id }, 'segredo_jwt', { expiresIn: '1h' });
 
         return res.json({
@@ -318,6 +318,17 @@ app.get('/mcadastrados', (req, res) => {
             res.status(500).json({ error: 'Erro ao buscar dados.' });
             return;
         }
-        res.json(results); // Envia os dados como JSON
+        res.json(results);
+    });
+});
+
+app.get('/eventos', (req, res) => {
+    connection.query('SELECT * FROM eventos', (err, results) => {
+        if (err) {
+            console.error('Erro na consulta:', err);
+            res.status(500).json({ error: 'Erro ao buscar dados.' });
+            return;
+        }
+        res.json(results);
     });
 });
