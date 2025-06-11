@@ -2,32 +2,45 @@
 <html lang="pt-br">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Menu</title>
+    <link rel="stylesheet" href="style-menu.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 </head>
 
 <body>
-    <form action="#" class="menu">
-        <div>
-            <button class="motorista_m" type="submit">Cadastrar Motorista</button>
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <img src="c:\Users\itall\Downloads\LogoSample_ByTailorBrands.jpg" alt="Logo" />
         </div>
-        <div>
-            <button class="carro_c" type="submit">Cadastrar Carro</button>
-        </div>
-        <div>
-            <button class="m_cadastrados" type="submit">Motoristas Cadastrados</button>
-        </div>
-        <div>
-            <button class="c_cadastrados" type="submit">Carros Cadastrados</button>
-        </div>
+        <nav>
+            <ul>
+                <li><a href="motorista.html"><i class="fas fa-user-plus"></i> Cadastrar Motorista</a></li>
+                <li><a href="carro.html"><i class="fas fa-car"></i> Cadastrar Carro</a></li>
+                <li><a href="mcadastrados.html"><i class="fas fa-users"></i> Motoristas Cadastrados</a></li>
+                <li><a href="tablecarros.html"><i class="fas fa-car-side"></i> Carros Cadastrados</a></li>
+                <li><a href="emprestar.html"><i class="fas fa-key"></i> Emprestar</a></li>
+                <li><a href="devolver.html"><i class="fas fa-undo"></i> Devolver</a></li>
 
-        <div>
-            <button class="emprestar" type="submit">Emprestar</button>
-        </div>
-        <div>
-            <button class="devolver" type="submit">Devolver</button>
-        </div>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="main">
+        <button id="menu-toggle"><i class="fas fa-bars"></i></button>
+
+        <h1>Bem-vindo</h1>
+        <p>Escolha uma opção no menu à esquerda.</p>
+    </div>
+
+    <script>
+        const toggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        toggle.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+        });
+    </script>
 
 </body>
 

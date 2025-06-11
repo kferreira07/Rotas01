@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carros Cadastrados</title>
+</head>
+
+<body>
+    <h1>Carros Cadastrados</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Foto</th>
+                <th>Id</th>
+                <th>Modelo</th>
+                <th>Cor</th>
+                <th>placa</th>
+                <th>Renavan</th>
+                <th>Chassi</th>
+                <th>Quilometragem</th>
+                <th>Tipo de Combustivel</th>
+                <th>transmissao</th>
+                <th>Valor</th>
+                <th>Observações</th>
+
+            </tr>
+        </thead>
+        <tbody id="tabela-carros">
+        </tbody>
+    </table>
+    <div>
+        <button type="button" onclick="window.location.href='buscarcarros.html'">Editar</button>
+    </div>
+
+    <div> <button type="button" onclick="window.location.href='carro.html'">Cadastrar</button></div>
+    <div>
+        <button onclick="excluirCarro()">Excluir Veicúlo</button>
+
+
+    </div>
+
+    <script>
+        async function carregarDados() {
+            try {
+                const response = await fetch('http://localhost:3000/tablecarros');
+                const data = await response.json();
+                const tabelaCorpo = document.getElementById('tabela-carros');
+
+                data.forEach(row => {
+                    const linha = document.createElement('tr');
+
+                    const foto = document.createElement('td');
+                    const img = document.createElement('img');
+                    img.src = row.foto || 'sem-foto.png';
+                    img.alt = 'Foto';
+                    img.style.width = '50px';
+                    img.style.height = '50px';
+                    foto.appendChild(img);
+                    linha.appendChild(foto);
+
+                    const campos = [
+                        'id', 'modelo', 'cor', 'placa', 'renavan', 'chassi', 'quilometragem', 'tipoCombustivel', 'transmissao', 'valor', 'observacoes',
+                    ];
+
+
+                    campos.forEach(campo => {
+                        const td = document.createElement('td');
+                        td.textContent = row[campo] || '';
+                        linha.appendChild(td);
+                    });
+
+                    tabelaCorpo.appendChild(linha);
+                });
+
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', carregarDados);
+
+        function excluirCarro() {
+            const id = prompt("Digite o ID do veículo que deseja excluir:");
+
+            if (!id) {
+                alert('ID não fornecido.');
+                return;
+            }
+
+            const confirmacao = confirm("Tem certeza que deseja excluir o veículo com ID " + id + "?");
+            if (!confirmacao) return;
+
+            fetch(`http://localhost:3000/carros/${id}`, {
+                method: 'DELETE'
+            })
+                .then(async res => {
+                    if (!res.ok) {
+                        const text = await res.text();
+                        throw new Error(`Erro ${res.status}: ${text}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    alert(data.message);
+
+                })
+                .catch(err => {
+                    console.error('Erro ao excluir veículo:', err.message);
+                    alert('Erro ao excluir veículo: ' + err.message);
+                });
+        }
+
+
+    </script>
+</body>
+
+</html>

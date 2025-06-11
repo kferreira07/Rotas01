@@ -1,45 +1,80 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagina de Login</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Página de Login</title>
+  <link rel="stylesheet" href="estilo-login.css">
 </head>
+
 <body class="login">
-    <form action class="login-form">
+  <form id="login" class="login-form">
     <div class="titulo-barra">
-    <h1>Faça o seu login </h1>
-    <div class="barra-horizontal"></div>
-   
-    <div class="campo-input">
-      <label for="email">Seu e-mail*</label>
-      <input type="email" id="email">
+      <h1>Faça o seu login</h1>
+      <div class="barra-horizontal"></div>
+
+      <div class="campo-input">
+        <label for="email">Seu e-mail*</label>
+        <input type="email" id="email" autocomplete="email" required>
+      </div>
+
+      <div class="campo-input">
+        <label for="senha">Sua senha*</label>
+        <input type="password" id="senha" autocomplete="current-password" required>
+      </div>
+
+      <div class="lembrar-me">
+        <input type="checkbox" id="lembrar">
+        <label for="lembrar">Lembrar-me</label>
+      </div>
+
+      <div class="button">
+        <button type="submit" class="entrar">Entrar</button>
+      </div>
+
+      <p id="errorMessage" style="color: red; margin-top: 10px;"></p>
+
+      <div>
+        <button type="button" onclick="window.location.href='cadastrase.html'">Cadastrar-se</button>
+      </div>
+
+      <div class="Esqueceu">
+        <p>Esqueceu sua senha? <a href="http://openai.com/index/chatgpt/">Clique aqui</a></p>
+      </div>
     </div>
+  </form>
 
-    <div class="campo-input">
-      <label for="password">Sua senha* </label>
-      <input type="password" id="password">
-    </div>
+  <script>
+    document.getElementById('login').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const senha = document.getElementById('senha').value;
+      const errorMessage = document.getElementById('errorMessage');
 
-    <div class="lembrar-me">
-      <input type="checkbox">
-      <p>Lembra-me</p>
-    </div>
+      try {
+        const response = await fetch('http://localhost:3000/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, senha }),
+        });
 
+        const data = await response.json();
 
-    <div class="button">
-    <button class="entrar">Entrar</button>
-
-    </div>
-
-    
-   <div class = "Esqueceu">
-    <p>Esqueceu sua senha?<a href="http://openai.com/index/chatgpt/">Click aqui</a></p>
-
-  
-  </div>   
-</form>
+        if (response.ok && data.success) {
+          localStorage.setItem('authToken', data.token);
+          window.location.href = 'menu.html';
+        } else {
+          errorMessage.textContent = data.message || 'Credenciais inválidas.';
+        }
+      } catch (error) {
+        console.error('Erro durante o login:', error);
+        errorMessage.textContent = 'Erro de conexão com o servidor.';
+      }
+    });
+  </script>
 </body>
+
 </html>

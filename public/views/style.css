@@ -1,0 +1,97 @@
+* {
+
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body.cadastrar {
+    background: #f0f4f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+/* Container central do formulário */
+.container-cadastro {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 500px;
+    padding: 50px 40px;
+}
+
+/* Título e barra */
+.titulo-barra2 h1 {
+    color: #333;
+    font-size: 2.2rem;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.barra-horizontal {
+    width: 60px;
+    height: 4px;
+    background: #2c3e50;
+    margin: 0 auto 30px;
+    border-radius: 2px;
+}
+
+/* Inputs */
+.campo-input {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.campo-input label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #444;
+}
+
+.campo-input input {
+    padding: 12px 14px;
+    border: 1.5px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.campo-input input:focus {
+    border-color: #2c3e50;
+    background: #f7f9fa;
+    outline: none;
+}
+
+/* Botão */
+.cadastrar-btn {
+    width: 100%;
+    margin-top: 25px;
+    padding: 14px;
+
+    background: #2c3e50;
+
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.cadastrar-btn:hover {
+    background: #223546;
+}
+
+/* Responsivo */
+@media (max-width: 500px) {
+    .container-cadastro {
+        padding: 30px 20px;
+    }
+}

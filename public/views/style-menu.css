@@ -1,0 +1,138 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f0f4f8;
+    display: flex;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 250px;
+    background-color: #2c3e50;
+    color: #fff;
+    padding-top: 20px;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+    transition: width 0.3s ease;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.sidebar.open {
+    width: 60px;
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 0 15px;
+}
+
+.logo img {
+    width: 160px;
+    max-width: 100%;
+    border-radius: 8px;
+    user-select: none;
+    pointer-events: none;
+}
+
+.sidebar.open .logo img {
+    width: 40px;
+    transition: width 0.3s ease;
+}
+
+
+.sidebar nav ul {
+    list-style: none;
+}
+
+.sidebar nav ul li {
+    margin: 10px 0;
+}
+
+.sidebar nav ul li a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #d1d9f0;
+    font-size: 16px;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-left: 4px solid transparent;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.sidebar nav ul li a:hover {
+    background-color: #2c3e50;
+    border-left-color: #4e82e6;
+    color: #e6e9f8;
+}
+
+.sidebar.open nav ul li a {
+    justify-content: center;
+    padding: 12px 0;
+    font-size: 0;
+}
+
+.sidebar.open nav ul li a i {
+    font-size: 20px;
+}
+
+.sidebar.open nav ul li a span {
+    display: none;
+}
+
+
+.sidebar nav ul li a i {
+    width: 20px;
+    text-align: center;
+}
+
+
+.main {
+    margin-left: 250px;
+    padding: 40px 40px 20px 40px;
+    flex: 1;
+    transition: margin-left 0.3s ease;
+}
+
+.sidebar.open~.main {
+    margin-left: 60px;
+}
+
+
+#menu-toggle {
+    background-color: transparent;
+    border: none;
+    color: #2c3e50;
+    font-size: 24px;
+    cursor: pointer;
+    margin-bottom: 30px;
+    transition: color 0.3s ease;
+}
+
+#menu-toggle:hover {
+    color: #2c3e50;
+}
+
+
+.main h1 {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.main p {
+    color: #34495e;
+    font-size: 16px;
+}

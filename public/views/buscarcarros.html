@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Veicúlos</title>
+</head>
+
+<body>
+    <h2>Buscar Veiculo por ID</h2>
+    <input type="number" id="buscarId" placeholder="Digite o ID do motorista">
+    <button onclick="buscarCarros()">Buscar</button>
+
+    <hr>
+
+    <div class="campo-input">
+        <label for="marca">Marca*</label>
+        <select id="marca" name="marca" required>
+            <option value="">Selecione</option>
+            <option value="ford">Ford</option>
+            <option value="chevrolet">Chevrolet</option>
+            <option value="fiat">Fiat</option>
+            <option value="toyota">Toyota</option>
+        </select>
+    </div>
+
+    <div class="campo-input">
+        <label for="modelo">Modelo*</label>
+        <input type="text" id="modelo" name="modelo" required />
+    </div>
+
+    <div class="campo-input">
+        <label for="fabricacao">Fabricação*</label>
+        <input type="number" id="fabricacao" name="fabricacao" required />
+    </div>
+
+    <div class="campo-input">
+        <label for="cor">Cor*</label>
+        <input type="color" id="cor" name="cor" required />
+    </div>
+
+    <div class="campo-input">
+        <label for="placa">Placa*</label>
+        <input type="text" id="placa" name="placa" placeholder="ABC-1234" required />
+    </div>
+
+    <div class="campo-input">
+        <label for="renavan">Renavan*</label>
+        <input type="text" id="renavan" name="renavan" placeholder="11 digítos" required />
+    </div>
+
+    <div class="campo-input">
+        <label for="chassi">Chassi*</label>
+        <input type="text" id="chassi" name="chassi" placeholder="17 caracteres alfanuméricos" required />
+    </div>
+
+    <div class="campo-input">
+        <label for="quilometragem">Quilometragem*</label>
+        <input type="text" id="quilometragem" name="quilometragem" required />
+    </div>
+
+    <div class="campo-input">
+        <label for="tipoCombustivel">Tipo de Combustível*</label>
+        <select id="tipoCombustivel" name="tipoCombustivel" required>
+            <option value="">Selecione</option>
+            <option value="gasolina">Gasolina</option>
+            <option value="etanol">Etanol</option>
+            <option value="diesel">Diesel</option>
+            <option value="flex">Flex</option>
+        </select>
+    </div>
+
+    <div class="campo-input">
+        <label for="transmissao">Transmissão*</label>
+        <select id="transmissao" name="transmissao" required>
+            <option value="">Selecione</option>
+            <option value="manual">Manual</option>
+            <option value="automatico">Automático</option>
+        </select>
+    </div>
+
+    <div class="campo-input">
+        <label for="valor">Valor*</label>
+        <input type="text" id="valor" name="valor" required />
+    </div>
+
+    <div class="campo-input">
+        <label for="foto">Foto*</label>
+        <input type="file" id="foto" name="foto" required />
+    </div>
+
+    <div class="campo-input">
+        <label for="observacoes">Observações*</label>
+        <textarea id="observacoes" name="observacoes" rows="4" cols="50" placeholder="Digite aqui..."
+            required></textarea>
+    </div>
+    <h2>Editar Veicúlo</h2>
+    <form id="form-editar">
+
+
+        <button type="button" onclick="atualizarCarro()">Salvar Alterações</button>
+    </form>
+
+    <script>
+        function buscarCarros() {
+            const id = document.getElementById('buscarId').value;
+
+            fetch(`http://localhost:3000/carros/${id}`)
+                .then(async res => {
+                    const contentType = res.headers.get("content-type");
+
+                    if (!res.ok) {
+                        const errorText = await res.text();
+                        throw new Error(`Erro ${res.status}: ${errorText}`);
+                    }
+
+                    if (!contentType || !contentType.includes("application/json")) {
+                        const text = await res.text();
+                        throw new Error(`Resposta inesperada do servidor: ${text}`);
+                    }
+
+                    return res.json();
+                })
+                .then(data => {
+                    document.getElementById('marca').value = data.marca || '';
+                    document.getElementById('modelo').value = data.modelo || '';
+                    document.getElementById('fabricacao').value = data.fabricacao || '';
+                    document.getElementById('cor').value = data.cor || '';
+                    document.getElementById('placa').value = data.placa || '';
+                    document.getElementById('renavan').value = data.renavan || '';
+                    document.getElementById('chassi').value = data.chassi || '';
+                    document.getElementById('quilometragem').value = data.quilometragem || '';
+                    document.getElementById('tipoCombustivel').value = data.tipoCombustivel || '';
+                    document.getElementById('transmissao').value = data.transmissao || '';
+                    document.getElementById('valor').value = data.valor || '';
+                    document.getElementById('observacoes').value = data.observacoes || '';
+
+                    /*     if (data.foto) {
+                             const preview = document.createElement('img');
+                             preview.src = data.foto;
+                             preview.style.width = '100px';
+                             preview.style.marginTop = '10px';
+                             document.getElementById('foto').after(preview);
+                         }
+                     })
+                     .catch(err => {
+                         console.error('Erro ao buscar veículo:', err.message);
+                         alert('Erro ao buscar veículo: ' + err.message);
+                     */});
+        }
+
+        function atualizarCarro() {
+            const id = document.getElementById('buscarId').value;
+
+            const dados = {
+                marca: document.getElementById('marca').value,
+                modelo: document.getElementById('modelo').value,
+                fabricacao: document.getElementById('fabricacao').value,
+                cor: document.getElementById('cor').value,
+                placa: document.getElementById('placa').value,
+                renavan: document.getElementById('renavan').value,
+                chassi: document.getElementById('chassi').value,
+                quilometragem: document.getElementById('quilometragem').value,
+                tipoCombustivel: document.getElementById('tipoCombustivel').value,
+                transmissao: document.getElementById('transmissao').value,
+                valor: document.getElementById('valor').value,
+                observacoes: document.getElementById('observacoes').value
+
+            };
+
+            fetch(`http://localhost:3000/carros/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dados)
+            })
+                .then(async res => {
+                    if (!res.ok) {
+                        const text = await res.text();
+                        throw new Error(`Erro ${res.status}: ${text}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    alert(data.message);
+                })
+                .catch(err => {
+                    console.error('Erro ao atualizar veículo:', err.message);
+                    alert('Erro ao atualizar veículo: ' + err.message);
+                });
+        }
+
+    </script>
+
+</body>
+
+</html>

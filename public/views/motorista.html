@@ -117,11 +117,11 @@
         </div>
 
         <div>
-            <button class="editar-btn" type="button">Editar</button>
+            <button type="button" onclick="window.location.href='buscarmotor.html'">Editar</button>
         </div>
 
         <div>
-            <button class="visualizar-btn" type="button">Visualizar</button>
+            <button type="button" onclick="window.location.href='mcadastrados.html'">Motoristas Cadastrados</button>
         </div>
 
         <div>
@@ -156,7 +156,7 @@
             };
 
             console.log("dados validados", dados);
-
+            form.reset();
             try {
                 const resposta = await fetch('http://localhost:3000/motoristas', {
                     method: 'POST',
@@ -179,36 +179,6 @@
             }
         });
 
-        const excluirBtn = document.querySelector(".excluirbtn");
-
-        excluirBtn.addEventListener("click", async (e) => {
-            e.preventDefault();
-
-            const idMotorista = prompt("Digite o ID do motorista que deseja excluir:");
-            if (!idMotorista || isNaN(idMotorista)) {
-                alert("ID inválido.");
-                return;
-            }
-
-            try {
-                const resposta = await fetch(`http://localhost:3000/motoristas/${idMotorista}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (!resposta.ok) {
-                    throw new Error("Erro ao excluir");
-                }
-
-                const resultado = await resposta.json();
-                alert(resultado.message);
-            } catch (erro) {
-                console.error("Erro ao deletar motorista:", erro);
-                alert("Erro ao deletar motorista.");
-            }
-        });
 
         const editarBtn = document.querySelector(".editar-btn");
 
@@ -261,6 +231,10 @@
                 alert('Erro ao editar motorista.');
             }
         });
+
+
+
+
     </script>
 </body>
 

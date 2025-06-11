@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motoristas Cadastrados</title>
+</head>
+
+<body>
+    <h1>Motoristas Cadastrados</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Foto</th>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Categoria CNH</th>
+                <th>Rg</th>
+                <th>Uf</th>
+                <th>Email</th>
+                <th>Cep</th>
+                <th>Complemento</th>
+                <th>Data Nasc</th>
+                <th>Telefone</th>
+                <th>Cnh</th>
+                <th>Venc/Cnh</th>
+                <th>Nome da Mãe</th>
+                <th>Cidade</th>
+                <th>Endereço</th>
+                <th>Número</th>
+                <th>País</th>
+                <th>Observações</th>
+            </tr>
+        </thead>
+        <tbody id="tabela-motor">
+        </tbody>
+    </table>
+    <div>
+        <button type="button" onclick="window.location.href='buscarmotor.html'">Editar</button>
+    </div>
+
+    <div> <button type="button" onclick="window.location.href='motorista.html'">Cadastrar</button></div>
+    <div>
+        <button onclick="excluirMotorista()">Excluir Motorista</button>
+    </div>
+    <script>
+        async function carregarDados() {
+            try {
+                const response = await fetch('http://localhost:3000/mcadastrados');
+                const data = await response.json();
+                const tabelaCorpo = document.getElementById('tabela-motor');
+
+                data.forEach(row => {
+                    const linha = document.createElement('tr');
+
+                    const foto = document.createElement('td');
+                    const img = document.createElement('img');
+                    img.src = row.foto || 'sem-foto.png';
+                    img.alt = 'Foto';
+                    img.style.width = '50px';
+                    img.style.height = '50px';
+                    foto.appendChild(img);
+                    linha.appendChild(foto);
+
+                    const campos = [
+                        'id', 'nome', 'categoriaCnh', 'rg', 'uf', 'email', 'cep', 'complemento',
+                        'dataNascimento', 'telefone', 'cnh', 'vencimentoCnh', 'nomeMae',
+                        'cidade', 'endereco', 'numero', 'pais', 'observacoes'
+                    ];
+
+                    campos.forEach(campo => {
+                        const td = document.createElement('td');
+                        td.textContent = row[campo] || '';
+                        linha.appendChild(td);
+                    });
+
+                    tabelaCorpo.appendChild(linha);
+                });
+
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', carregarDados);
+
+        function excluirMotorista() {
+            const id = prompt("Digite o ID do Motorista que deseja excluir:");
+
+            if (!id) {
+                alert('ID não fornecido.');
+                return;
+            }
+
+            const confirmacao = confirm("Tem certeza que deseja excluir o Motorista com ID " + id + "?");
+            if (!confirmacao) return;
+
+            fetch(`http://localhost:3000/motoristas/${id}`, {
+                method: 'DELETE'
+            })
+                .then(async res => {
+                    if (!res.ok) {
+                        const text = await res.text();
+                        throw new Error(`Erro ${res.status}: ${text}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    alert(data.message);
+
+                })
+                .catch(err => {
+                    console.error('Erro ao excluir Motorista:', err.message);
+                    alert('Erro ao excluir Motorista: ' + err.message);
+                });
+
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventos</title>
+</head>
+
+<body>
+    <h1>Tabela De Eventos</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Gestor</th>
+                <th>Motorista</th>
+                <th>Carro</th>
+                <th>Tipo de Evento</th>
+                <th>Telefone</th>
+                <th>Ôdometro</th>
+                <th>Data/Hora</th>
+            </tr>
+        </thead>
+        <tbody id="tabela-evento">
+        </tbody>
+    </table>
+
+    <script>
+        // Função para formatar a data/hora no formato dd/mm/yyyy hh:mm
+        function formatarDataHora(dataHora) {
+            const data = new Date(dataHora);
+            const dia = String(data.getDate()).padStart(2, '0');
+            const mes = String(data.getMonth() + 1).padStart(2, '0');
+            const ano = data.getFullYear();
+            const hora = String(data.getHours()).padStart(2, '0');
+            const minutos = String(data.getMinutes()).padStart(2, '0');
+            return `${dia}/${mes}/${ano} ${hora}:${minutos}`;
+        }
+
+        async function carregarDados() {
+            try {
+                const response = await fetch('http://localhost:3000/eventos');
+                const data = await response.json();
+                const tabelaCorpo = document.getElementById('tabela-evento');
+
+                data.forEach(row => {
+                    const linha = document.createElement('tr');
+
+                    // Campos para adicionar na tabela
+                    const campos = [
+                        'id', 'gestor', 'motorista', 'carro', 'tipo', 'telefone', 'odometro',
+                    ];
+
+                    // Adiciona os dados dos campos na linha da tabela
+                    campos.forEach(campo => {
+                        const td = document.createElement('td');
+                        td.textContent = row[campo] || '';  // Preenche com valor ou com string vazia
+                        linha.appendChild(td);
+                    });
+
+                    // Formata a data/hora antes de adicionar à tabela
+                    const dataHora = document.createElement('td');
+                    dataHora.textContent = formatarDataHora(row.data_hora);  // Formata a data/hora
+                    linha.appendChild(dataHora);
+
+                    tabelaCorpo.appendChild(linha);
+                });
+
+            } catch (error) {
+                console.error('Erro ao carregar dados:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', carregarDados);
+    </script>
+</body>
+
+</html>

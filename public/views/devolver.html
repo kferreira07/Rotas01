@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="estilo-devolver.css">
     <title>Devolver</title>
 </head>
 
@@ -16,14 +17,12 @@
         </div>
         <div class="select-container">
 
-            <label for="motorista">Motorista:</label>
-            <select name="motorista" id="motorista">
-                <% motoristas.forEach(motorista=> { %>
-                    <option value="<%= motorista.nome %>">
-                        <%= motorista.nome %>
-                    </option>
-                    <% }) %>
-            </select>
+            <div class="select-container">
+                <label for="motorista">Motorista*</label>
+                <input list="lista-nome" id="motorista" name="motorista" required />
+                <datalist id="lista-nome"></datalist>
+            </div>
+
 
         </div>
         <div class="campo-input">
@@ -43,15 +42,85 @@
 
         <div class="campo-input">
             <label for="evento">Tipo de evento</label>
-            <input type="text" id="evento" />
+            <input type="text" id="tipo" />
         </div>
 
         <div class="campo-input">
-            <label for="dataEmprestimo">Data\hora da devolução</label>
-            <input type="datetime-local" id="dataEmprestimo" />
+            <label for="data_hora">Data\hora da devolução</label>
+            <input type="datetime-local" id="data_hora" />
         </div>
+        <div>
+            <button class="devolver-btn" type="submit">Devolver </button>
 
 
+        </div>
+        <script>      const form = document.querySelector(".Emprestar");
+
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+
+                const dados = {
+                    gestor: document.getElementById('gestor').value,
+                    motorista: document.getElementById('motorista').value,
+                    carro: document.getElementById('carro').value,
+                    tipo: document.getElementById('tipo').value,
+                    odometro: document.getElementById('odometro').value,
+                    data_hora: document.getElementById('data_hora').value,
+                    telefone: document.getElementById('telefone').value,
+
+
+                };
+
+                try {
+
+                    const resposta = await fetch('http://localhost:3000/devolver', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(dados),
+                    });
+
+
+                    const texto = await resposta.text();
+                    console.log('Resposta do servidor:', texto);
+
+                    if (!resposta.ok) {
+                        throw new Error(`Erro na requisição: ${resposta.status}`);
+                    }
+
+                    alert('Devolução registrada com sucesso!');
+                    form.reset();
+                } catch (erro) {
+                    console.error('Erro ao devolver:', erro);
+                    alert('Erro ao devolver.');
+                }
+            });
+
+            async function carregarMotoristas() {
+                try {
+                    const resposta = await fetch('http://localhost:3000/motoristas');
+                    if (!resposta.ok) {
+                        throw new Error('Erro na requisição');
+                    }
+                    const motoristas = await resposta.json();
+
+                    const datalist = document.querySelector('#lista-nome');
+                    datalist.innerHTML = '';
+                    motoristas.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.nome;
+                        datalist.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error('Erro ao carregar motoristas:', error);
+                }
+            }
+
+            carregarMotoristas();
+
+        </script>
 
 </body>
 
