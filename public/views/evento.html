@@ -10,6 +10,23 @@
 <body>
     <h1>Tabela De Eventos</h1>
 
+    <!-- Filtros -->
+    <div>
+        <select id="filtro-nome">
+            <option value="">Todos os motoristas</option>
+        </select>
+
+        <select id="filtro-tipo">
+            <option value="">Todos os tipos</option>
+            <option value="emprestar">Emprestar</option>
+            <option value="devolução">Devolução</option>
+            <option value="hgh">HGH</option>
+        </select>
+
+        <button onclick="carregarDados()">Filtrar</button>
+    </div>
+
+    <!-- Tabela -->
     <table border="1">
         <thead>
             <tr>
@@ -27,8 +44,8 @@
         </tbody>
     </table>
 
+    <!-- Script -->
     <script>
-        // Função para formatar a data/hora no formato dd/mm/yyyy hh:mm
         function formatarDataHora(dataHora) {
             const data = new Date(dataHora);
             const dia = String(data.getDate()).padStart(2, '0');
@@ -43,26 +60,32 @@
             try {
                 const response = await fetch('http://localhost:3000/eventos');
                 const data = await response.json();
+                console.log('Todos os dados:', data);
+
+                preencherSelectMotoristas(data);
+
+                const filtroNome = document.getElementById('filtro-nome').value.trim().toLowerCase();
+                const filtroTipo = document.getElementById('filtro-tipo').value.trim().toLowerCase();
                 const tabelaCorpo = document.getElementById('tabela-evento');
+                tabelaCorpo.innerHTML = '';
 
-                data.forEach(row => {
+                const filtrado = data.filter(evento => {
+                    const nomeCond = filtroNome === '' || evento.motorista.toLowerCase() === filtroNome;
+                    const tipoCond = filtroTipo === '' || evento.tipo.toLowerCase() === filtroTipo;
+                    return nomeCond && tipoCond;
+                });
+
+                filtrado.forEach(row => {
                     const linha = document.createElement('tr');
-
-                    // Campos para adicionar na tabela
-                    const campos = [
-                        'id', 'gestor', 'motorista', 'carro', 'tipo', 'telefone', 'odometro',
-                    ];
-
-                    // Adiciona os dados dos campos na linha da tabela
+                    const campos = ['id', 'gestor', 'motorista', 'carro', 'tipo', 'telefone', 'odometro'];
                     campos.forEach(campo => {
                         const td = document.createElement('td');
-                        td.textContent = row[campo] || '';  // Preenche com valor ou com string vazia
+                        td.textContent = row[campo] || '';
                         linha.appendChild(td);
                     });
 
-                    // Formata a data/hora antes de adicionar à tabela
                     const dataHora = document.createElement('td');
-                    dataHora.textContent = formatarDataHora(row.data_hora);  // Formata a data/hora
+                    dataHora.textContent = formatarDataHora(row.data_hora);
                     linha.appendChild(dataHora);
 
                     tabelaCorpo.appendChild(linha);
@@ -70,6 +93,21 @@
 
             } catch (error) {
                 console.error('Erro ao carregar dados:', error);
+            }
+        }
+
+        function preencherSelectMotoristas(data) {
+            const select = document.getElementById('filtro-nome');
+            const motoristasUnicos = [...new Set(data.map(ev => ev.motorista))];
+
+            // Evita duplicação ao filtrar novamente
+            if (select.options.length <= 1) {
+                motoristasUnicos.forEach(nome => {
+                    const option = document.createElement('option');
+                    option.value = nome.toLowerCase();
+                    option.textContent = nome;
+                    select.appendChild(option);
+                });
             }
         }
 
