@@ -1,0 +1,110 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background: #f0f4f8;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  color: #333;
+}
+
+h2 {
+  color: #2c3e50;
+  margin-bottom: 16px;
+  font-size: 1.6rem;
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+input[type="number"]#buscarId {
+  width: 100%;
+  max-width: 400px;
+  padding: 12px 15px;
+  font-size: 1rem;
+  border: 1.8px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  transition: border-color 0.3s ease;
+}
+
+input[type="number"]#buscarId:focus {
+  border-color: #2c3e50;
+  background-color: #eef2f7;
+  outline: none;
+}
+
+button {
+  background-color: #2c3e50;
+  color: white;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 30px;
+  max-width: 150px;
+}
+
+button:hover {
+  background-color: #1f2f3f;
+}
+
+form#form-editar {
+  width: 100%;
+  max-width: 600px;
+  background: white;
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+form#form-editar label {
+  display: block;
+  color: #555;
+  font-weight: 600;
+  margin-bottom: 6px;
+  margin-top: 12px;
+}
+
+form#form-editar input[type="text"],
+form#form-editar input[type="email"],
+form#form-editar input[type="date"] {
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 1rem;
+  border: 1.8px solid #ccc;
+  border-radius: 6px;
+  transition: border-color 0.3s ease;
+}
+
+form#form-editar input[type="text"]:focus,
+form#form-editar input[type="email"]:focus,
+form#form-editar input[type="date"]:focus {
+  border-color: #2c3e50;
+  background-color: #eef2f7;
+  outline: none;
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 16px;
+  }
+
+  button {
+    width: 100%;
+    max-width: none;
+  }
+
+  form#form-editar {
+    padding: 20px;
+  }
+}
