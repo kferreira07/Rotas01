@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <h1>Tabela De Eventos</h1>
+    <h1>Tabela de Eventos</h1>
 
     <!-- Filtros -->
     <div>
@@ -25,6 +25,7 @@
         </select>
 
         <button onclick="carregarDados()">Filtrar</button>
+        <button onclick="gerarRelatorio()">Gerar Relatório</button>
     </div>
 
     <!-- Tabela -->
@@ -35,18 +36,22 @@
                 <th>Gestor</th>
                 <th>Motorista</th>
                 <th>Carro</th>
+                <th>Placa</th>
                 <th>Tipo de Evento</th>
                 <th>Telefone</th>
-                <th>Ôdometro</th>
+                <th>Odômetro</th>
                 <th>Data/Hora</th>
             </tr>
         </thead>
-        <tbody id="tabela-evento">
-        </tbody>
+        <tbody id="tabela-evento"></tbody>
     </table>
 
-    <!-- Script -->
+    <!-- Relatório -->
+    <h2>Relatório de Disponibilidade</h2>
+    <div id="relatorio"></div>
+
     <script>
+        // Função para formatar data e hora
         function formatarDataHora(dataHora) {
             const data = new Date(dataHora);
             const dia = String(data.getDate()).padStart(2, '0');
@@ -57,6 +62,7 @@
             return `${dia}/${mes}/${ano} ${hora}:${minutos}`;
         }
 
+        // Carregar dados da API
         async function carregarDados() {
             try {
                 const response = await fetch('http://localhost:3000/eventos');
@@ -78,7 +84,7 @@
 
                 filtrado.forEach(row => {
                     const linha = document.createElement('tr');
-                    const campos = ['id', 'gestor', 'motorista', 'carro', 'tipo', 'telefone', 'odometro'];
+                    const campos = ['id', 'gestor', 'motorista', 'carro', 'placa', 'tipo', 'telefone', 'odometro'];
                     campos.forEach(campo => {
                         const td = document.createElement('td');
                         td.textContent = row[campo] || '';
@@ -92,16 +98,18 @@
                     tabelaCorpo.appendChild(linha);
                 });
 
+                window.todosEventos = data; // Salva os dados para o relatório
+
             } catch (error) {
                 console.error('Erro ao carregar dados:', error);
             }
         }
 
+        // Preencher o select de motoristas
         function preencherSelectMotoristas(data) {
             const select = document.getElementById('filtro-nome');
             const motoristasUnicos = [...new Set(data.map(ev => ev.motorista))];
 
-            // Evita duplicação ao filtrar novamente
             if (select.options.length <= 1) {
                 motoristasUnicos.forEach(nome => {
                     const option = document.createElement('option');
@@ -112,6 +120,52 @@
             }
         }
 
+        // Gerar relatório de disponibilidade
+        function gerarRelatorio() {
+            const eventos = window.todosEventos || [];
+            const relatorioDiv = document.getElementById('relatorio');
+            relatorioDiv.innerHTML = '';
+
+            const statusMotoristas = {};
+            const statusCarros = {};
+
+            // Ordenar os eventos por data/hora
+            eventos.sort((a, b) => new Date(a.data_hora) - new Date(b.data_hora));
+
+            eventos.forEach(evento => {
+                const motorista = evento.motorista;
+                const placa = evento.placa ? evento.placa.toUpperCase() : 'SEM PLACA';
+                const tipo = evento.tipo.trim().toLowerCase();
+
+                if (tipo === 'emprestar') {
+                    statusMotoristas[motorista] = 'Indisponível';
+                    statusCarros[placa] = 'Indisponível';
+                } else if (tipo === 'devolução') {
+                    statusMotoristas[motorista] = 'Disponível';
+                    statusCarros[placa] = 'Disponível';
+                }
+            });
+
+            const lista = document.createElement('ul');
+
+            // Mostrar status dos motoristas
+            for (const [motorista, status] of Object.entries(statusMotoristas)) {
+                const item = document.createElement('li');
+                item.textContent = `Motorista ${motorista}: ${status}`;
+                lista.appendChild(item);
+            }
+
+            // Mostrar status dos carros pela placa
+            for (const [placa, status] of Object.entries(statusCarros)) {
+                const item = document.createElement('li');
+                item.textContent = `Carro com placa ${placa}: ${status}`;
+                lista.appendChild(item);
+            }
+
+            relatorioDiv.appendChild(lista);
+        }
+
+        // Carregar dados automaticamente ao abrir a página
         document.addEventListener('DOMContentLoaded', carregarDados);
     </script>
 </body>

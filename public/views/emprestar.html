@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <form action="/emprestar" method="POST" class="Emprestar">
+    <form class="Emprestar">
 
         <div class="campo-input">
             <label for="gestor">Gestor</label>
@@ -30,6 +30,11 @@
         <div class="campo-input">
             <label for="carro">Carro</label>
             <input type="text" id="carro" name="carro" />
+        </div>
+
+        <div class="campo-input">
+            <label for="placa">Placa</label>
+            <input type="text" id="placa" name="placa" />
         </div>
 
         <div class="campo-input">
@@ -58,20 +63,18 @@
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
 
-
             const dados = {
                 gestor: document.getElementById('gestor').value,
                 motorista: document.getElementById('motorista').value,
                 carro: document.getElementById('carro').value,
+                placa: document.getElementById('placa').value,
                 tipo: document.getElementById('tipo').value,
                 odometro: document.getElementById('odometro').value,
                 data_hora: document.getElementById('data_hora').value,
                 telefone: document.getElementById('telefone').value,
-
             };
 
             try {
-
                 const resposta = await fetch('http://localhost:3000/emprestar', {
                     method: 'POST',
                     headers: {
@@ -79,7 +82,6 @@
                     },
                     body: JSON.stringify(dados),
                 });
-
 
                 const texto = await resposta.text();
                 console.log('Resposta do servidor:', texto);
@@ -117,8 +119,6 @@
         }
 
         carregarMotoristas();
-
-
     </script>
 </body>
 

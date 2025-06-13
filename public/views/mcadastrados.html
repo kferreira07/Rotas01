@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Motoristas Cadastrados</title>
-     <link rel="stylesheet" href="style-mcadastrados.css">
+    <link rel="stylesheet" href="style-mcadastrados.css">
 </head>
 
 <body>
@@ -49,7 +49,7 @@
     <script>
         async function carregarDados() {
             try {
-                const response = await fetch('http://localhost:3000/mcadastrados');
+                const response = await fetch('http://localhost:3000/motoristas');
                 const data = await response.json();
                 const tabelaCorpo = document.getElementById('tabela-motor');
 

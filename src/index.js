@@ -152,28 +152,38 @@ app.get('/api/motoristas', (req, res) => {
 
 
 app.post('/emprestar', (req, res) => {
-    const { gestor, motorista, telefone, carro, odometro, tipo, data_hora } = req.body;
+    const { gestor, motorista, telefone, carro, placa, odometro, tipo, data_hora } = req.body;
     if (!gestor || !motorista || !carro || !data_hora)
         return res.status(400).send('Campos obrigatórios faltando');
 
-    const query = `INSERT INTO eventos (gestor, motorista, telefone, carro, odometro, tipo, data_hora) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-    connection.query(query, [gestor, motorista, telefone, carro, odometro, tipo, data_hora], (err) => {
+    const query = `INSERT INTO eventos (gestor, motorista, telefone, carro, placa, odometro, tipo, data_hora) VALUES (?,?, ?, ?, ?, ?, ?, ?)`;
+    connection.query(query, [gestor, motorista, telefone, carro, placa, odometro, tipo, data_hora], (err) => {
         if (err) return res.status(500).send('Erro ao registrar empréstimo');
         res.status(201).send('Empréstimo registrado com sucesso!');
     });
 });
-
 app.post('/devolver', (req, res) => {
-    const { gestor, motorista, telefone, carro, odometro, tipo, data_hora } = req.body;
-    if (!gestor || !motorista || !carro || !data_hora)
-        return res.status(400).send('Campos obrigatórios faltando');
+    const { gestor, motorista, telefone, carro, placa, odometro, tipo, data_hora } = req.body;
 
-    const query = `INSERT INTO eventos (gestor, motorista, telefone, carro, odometro, tipo, data_hora) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-    connection.query(query, [gestor, motorista, telefone, carro, odometro, tipo, data_hora], (err) => {
-        if (err) return res.status(500).send('Erro ao registrar devolução');
+    if (!gestor || !motorista || !carro || !data_hora) {
+        return res.status(400).send('Campos obrigatórios faltando');
+    }
+
+    const query = `
+        INSERT INTO eventos 
+        (motorista, carro, tipo, data_hora, gestor, odometro, telefone, placa) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    connection.query(query, [motorista, carro, tipo, data_hora, gestor, odometro, telefone, placa], (err) => {
+        if (err) {
+            console.error('Erro ao registrar devolução:', err);
+            return res.status(500).send('Erro ao registrar devolução');
+        }
         res.status(201).send('Devolução registrada com sucesso!');
     });
 });
+
 
 app.get('/eventos', (req, res) => {
     connection.query('SELECT * FROM eventos', (err, results) => {
